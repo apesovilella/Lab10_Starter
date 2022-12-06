@@ -14,6 +14,7 @@
   <!-- Main Stylesheet & Scripts -->
   <link rel="stylesheet" href="assets/styles/global.css" />
   <script src="assets/scripts/partyHorn.js" type="module"></script>
+  <script src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
 </head>
 
 <body>
@@ -42,6 +43,29 @@
       <audio class="hidden" src=""></audio>
     </section>
   </main>
+  <script>
+    // Set up the user properties. This user should appear on your LaunchDarkly users dashboard
+    // soon after you run the demo.
+    var user = {
+      key: Math.random(),
+    };
+
+
+    // Create a new LDClient instance with your environment-specific SDK key
+    var ldclient = LDClient.initialize('638eed92c6f1c811f7e9a70e', user);
+
+    function render() {
+      var flagValue = ldclient.variation('blue-background', false);
+      console.log("SDK successfully connected! The value of blue-background is " + flagValue + " for " + user.key)
+      if(flagValue) {
+        var element = document.querySelector('body');
+        element.classList.add("blue");
+      }
+    }
+
+    ldclient.on('ready', render);
+    ldclient.on('change', render);
+  </script>
 </body>
 
 </html>
